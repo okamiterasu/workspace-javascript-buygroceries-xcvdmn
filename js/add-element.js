@@ -25,7 +25,17 @@ function addElement() {
   new_element.setAttribute('class', 'cool');
   todo.append(new_element);
   // add a input text box
-  new_element.appendChild(document.createElement('input'));
+  const tb = document.createElement('input');
+  tb.setAttribute('type', 'text');
+  tb.addEventListener('blur', function () {
+    const self = $(this);
+    const text = self.val();
+    const parent = self.parent();
+    self.remove();
+    parent.text(text);
+    parent.click(changeStyle);
+  });
+  new_element.appendChild(tb);
   // whenever the user are done add the element
 }
 
@@ -44,13 +54,21 @@ function changeStyle() {
   } else if (self.hasClass('hot')) {
     self.removeClass('hot');
     self.addClass('cool');
+  } else {
+    self.addClass('cool');
   }
 }
-$('#todo').children().click(changeStyle);
+todo.children().click(changeStyle);
 
 // delete complete element by clicking the trash can
 document.getElementById('remove').addEventListener('click', removeElement);
 
 function removeElement() {
   // remove the marked elements  -- element with style complete
+  todo
+    .children()
+    .filter(function () {
+      return $(this).hasClass('complete');
+    })
+    .remove();
 }
